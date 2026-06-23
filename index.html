@@ -50,18 +50,18 @@
   <div class="controls">
     <label for="sign">星座を選んでください：</label>
     <select id="sign">
-      <option value="Aries">おひつじ座 (Aries)</option>
-      <option value="Taurus">おうし座 (Taurus)</option>
-      <option value="Gemini">ふたご座 (Gemini)</option>
-      <option value="Cancer">かに座 (Cancer)</option>
-      <option value="Leo">しし座 (Leo)</option>
-      <option value="Virgo">おとめ座 (Virgo)</option>
-      <option value="Libra">てんびん座 (Libra)</option>
-      <option value="Scorpio">さそり座 (Scorpio)</option>
-      <option value="Sagittarius">いて座 (Sagittarius)</option>
-      <option value="Capricorn">やぎ座 (Capricorn)</option>
-      <option value="Aquarius">みずがめ座 (Aquarius)</option>
-      <option value="Pisces">うお座 (Pisces)</option>
+      <option value="Aries">おひつじ座（Aries）</option>
+      <option value="Taurus">おうし座（Taurus）</option>
+      <option value="Gemini">ふたご座（Gemini）</option>
+      <option value="Cancer">かに座（Cancer）</option>
+      <option value="Leo">しし座（Leo）</option>
+      <option value="Virgo">おとめ座（Virgo）</option>
+      <option value="Libra">てんびん座（Libra）</option>
+      <option value="Scorpio">さそり座（Scorpio）</option>
+      <option value="Sagittarius">いて座（Sagittarius）</option>
+      <option value="Capricorn">やぎ座（Capricorn）</option>
+      <option value="Aquarius">みずがめ座（Aquarius）</option>
+      <option value="Pisces">うお座（Pisces）</option>
     </select>
     <button class="fetch-btn">占う</button>
   </div>
@@ -69,29 +69,29 @@
   <div class="result"><!-- ここに運勢が表示されます --></div>
 
   <script>
-    // ===== あなたの課題：getHoroscope(sign) を作る =====
-    //  ・async function getHoroscope(sign) { ... }
+    // ===== あなたの課題：getHoroscope(sign） を作る =====
+    //  ・async function getHoroscope(sign） { ... }
     //  ・次のURLに fetch（sign を埋め込む）:
     //      https://trident-web.kikirara.jp/horoscope/?sign=（sign）&day=TODAY
-    //  ・await response.json() で変換し、data.data.horoscope を return
+    //  ・await response.json(） で変換し、data.data.horoscope を return
 
 
 
     // ===== ここから下は完成済みです。書き換えないでください =====
-    document.querySelector('.fetch-btn').addEventListener('click', async function () {
-      const sign = document.querySelector('#sign').value;
-      const result = document.querySelector('.result');
+    document.querySelector('.fetch-btn'）.addEventListener('click', async function（） {
+      const sign = document.querySelector('#sign'）.value;
+      const result = document.querySelector('.result'）;
       result.textContent = '占い中…';
       try {
         //このgetHoroscope関数を定義する問題です。
-        const horoscope = await getHoroscope(sign);
+        const horoscope = await getHoroscope(sign）;
         result.textContent = horoscope;
-      } catch (err) {
-        result.textContent =
-          '取得に失敗しました。fetch の URL が正しいか、ネットに接続しているか確認してください。';
-        console.error(err);
-      }
-    });
+      } catch（err） {
+      result.textContent =
+        '取得に失敗しました。fetch の URL が正しいか、ネットに接続しているか確認してください。';
+      console.error(err）;
+    }
+    }）;
   </script>
 </body>
 </html>

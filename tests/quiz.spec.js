@@ -45,11 +45,11 @@ function mockHoroscope(page, captured) {
 }
 
 async function selectSignAndFetch(page, signValue) {
+  // <select> を選ぶ（change イベント）だけで取得が走る
   await page.selectOption('#sign', signValue);
-  await page.click('.fetch-btn');
 }
 
-test('占うボタンで取得した運勢が .result に表示される', async ({ page }) => {
+test('星座を選ぶと取得した運勢が .result に表示される', async ({ page }) => {
   const captured = {};
   await mockHoroscope(page, captured);
   await page.goto(resolveUrl());
@@ -79,7 +79,12 @@ test('コンソールエラーが出ていない', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (err) => errors.push(String(err)));
   page.on('console', (msg) => {
-    if (msg.type() === 'error') errors.push(msg.text());
+    if (msg.type() !== 'error') return;
+    // 演出用の Motion（CDN）の読み込み失敗は課題と無関係なので無視する。
+    // → CDN が落ちていても、学生の fetch コードの判定は影響を受けない。
+    const url = (msg.location() && msg.location().url) || '';
+    if (url.includes('cdn.jsdelivr.net') || /jsdelivr|motion/i.test(msg.text())) return;
+    errors.push(msg.text());
   });
   await mockHoroscope(page, captured);
   await page.goto(resolveUrl());

@@ -34,6 +34,12 @@
       cursor: pointer;
     }
 
+    .star {
+      font-size: 1.4rem;
+      opacity: 0;
+      display: inline-block;
+    }
+
     .result {
       min-height: 4em;
       padding: 14px 16px;
@@ -48,8 +54,9 @@
   <h1>きょうの星座占い</h1>
 
   <div class="controls">
-    <label for="sign">星座を選んでください：</label>
+    <label for="sign">星座：</label>
     <select id="sign">
+      <option value="" selected disabled>選んでください</option>
       <option value="Aries">おひつじ座（Aries）</option>
       <option value="Taurus">おうし座（Taurus）</option>
       <option value="Gemini">ふたご座（Gemini）</option>
@@ -63,35 +70,62 @@
       <option value="Aquarius">みずがめ座（Aquarius）</option>
       <option value="Pisces">うお座（Pisces）</option>
     </select>
-    <button class="fetch-btn">占う</button>
+    <span class="star">✨</span>
   </div>
 
   <div class="result"><!-- ここに運勢が表示されます --></div>
 
   <script>
-    // ===== あなたの課題：getHoroscope(sign） を作る =====
-    //  ・async function getHoroscope(sign） { ... }
+    // ===== あなたの課題：getHoroscope(sign) を作る =====
+    //  ・async function getHoroscope(sign) { ... }
     //  ・次のURLに fetch（sign を埋め込む）:
     //      https://trident-web.kikirara.jp/horoscope/?sign=（sign）&day=TODAY
-    //  ・await response.json(） で変換し、data.data.horoscope を return
+    //  ・await response.json() で変換し、data.data.horoscope を return
 
 
 
     // ===== ここから下は完成済みです。書き換えないでください =====
-    document.querySelector('.fetch-btn'）.addEventListener('click', async function（） {
-      const sign = document.querySelector('#sign'）.value;
-      const result = document.querySelector('.result'）;
+    // 演出（Motion）が読み込めなかった時用の「何もしない」初期値。
+    // Motion が読み込めたら、下の module がこの2つを上書きします。
+    window.startLoading = function () { return { stop: function () {} }; };
+    window.revealResult = function () {};
+
+    const select = document.querySelector('#sign');
+    const star = document.querySelector('.star');
+    select.addEventListener('change', async function () {
+      const sign = select.value;
+      const result = document.querySelector('.result');
       result.textContent = '占い中…';
+      star.style.opacity = '1';
+      const loading = window.startLoading(star); // ✨を回す（演出）
       try {
-        //このgetHoroscope関数を定義する問題です。
-        const horoscope = await getHoroscope(sign）;
+        const horoscope = await getHoroscope(sign);
         result.textContent = horoscope;
-      } catch（err） {
-      result.textContent =
-        '取得に失敗しました。fetch の URL が正しいか、ネットに接続しているか確認してください。';
-      console.error(err）;
+        window.revealResult(result); // 運勢をふわっと表示（演出）
+      } catch (err) {
+        result.textContent =
+          '取得に失敗しました。fetch の URL が正しいか、ネットに接続しているか確認してください。';
+        console.error(err);
+      } finally {
+        loading.stop();
+        star.style.opacity = '0';
+      }
+    });
+  </script>
+
+  <!-- 演出（Motion）。読み込めなくても課題には影響しません。書き換え不要です。 -->
+  <script type="module">
+    try {
+      const { animate } = await import('https://cdn.jsdelivr.net/npm/motion@12/+esm');
+      // 取得中：✨をくるくる回す（戻り値の .stop() で止める）
+      window.startLoading = (el) =>
+        animate(el, { rotate: [0, 360] }, { duration: 1, repeat: Infinity, ease: 'linear' });
+      // 取得完了：運勢を下からふわっと表示
+      window.revealResult = (el) =>
+        animate(el, { opacity: [0, 1], y: [12, 0] }, { duration: 0.5, ease: 'easeOut' });
+    } catch (e) {
+      // Motion が読めない時は何もしない（演出だけスキップ）
     }
-    }）;
   </script>
 </body>
 </html>
